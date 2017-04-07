@@ -10,7 +10,7 @@ pub trait Semigroup {
 
 pub trait PreSorted<T: Keyed + Semigroup> {
     fn add(&mut self, x: T);
-//    fn find(&self, key: T::Key) -> Option<&T>;
+    fn get_by_key(&self, key: &T::Key) -> Option<&T>;
 }
 
 impl<T: Keyed + Semigroup> PreSorted<T> for Vec<T> {
@@ -20,7 +20,12 @@ impl<T: Keyed + Semigroup> PreSorted<T> for Vec<T> {
             Err(i) => self.insert(i, x)
         }
     }
-  //  fn find(&self
+    fn get_by_key(&self, key: &T::Key) -> Option<&T> {
+        match self.binary_search_by_key(key, |y| y.key()) {
+            Ok(i) => self.get(i),
+            Err(_) => None
+        }
+    }
 }
 
 #[cfg(test)]
@@ -58,5 +63,6 @@ mod tests {
         assert!(v == vec![Thing(1, 0.1), Thing(3, 0.3), Thing(4, 0.4), Thing(5, 0.5 )]);
         v.add(Thing(4, 0.6));
         assert!(v == vec![Thing(1, 0.1), Thing(3, 0.3), Thing(4, 1.0), Thing(5, 0.5 )]);
+        assert!(v.get_by_key(&3) == Some(&Thing(3, 0.3)));
     }
 }
