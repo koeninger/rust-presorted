@@ -2,5 +2,6 @@
 name = "presorted"
 version = "0.1.0"
 authors = ["cody koeninger <cody@koeninger.org>"]
+license = "mit"
 
 [dependencies]
