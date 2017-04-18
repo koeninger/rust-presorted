@@ -4,4 +4,6 @@ version = "0.1.0"
 authors = ["cody koeninger <cody@koeninger.org>"]
 license = "mit"
 
-[dependencies]
+[dev-dependencies]
+quickcheck = "0.4.1"
+quickcheck_macros = "0.4.1"
