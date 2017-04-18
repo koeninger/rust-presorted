@@ -28,7 +28,7 @@ impl<T: Clone + Keyed + Semigroup> Presorted<T> for Vec<T> {
     fn put(&mut self, x: T) {
         match self.binary_search_by_key(&x.key(), |y| y.key()) {
             Ok(i) => self[i] = self[i].combine(&x),
-            Err(i) => self.insert(i, x)
+            Err(i) => self.insert(i, x),
         }
     }
     fn merge(&mut self, other: Self) {
@@ -57,7 +57,7 @@ impl<T: Clone + Keyed + Semigroup> Presorted<T> for Vec<T> {
     fn get_by_key(&self, key: &T::Key) -> Option<&T> {
         match self.binary_search_by_key(key, |y| y.key()) {
             Ok(i) => self.get(i),
-            Err(_) => None
+            Err(_) => None,
         }
     }
 }
@@ -73,9 +73,9 @@ mod tests {
     use Semigroup;
     use quickcheck::{Arbitrary, Gen};
     use std::cmp::Ordering;
-    
+
     #[derive(Debug, Copy, Clone)]
-    struct Thing(i32,f32);
+    struct Thing(i32, f32);
 
     impl PartialEq for Thing {
         fn eq(&self, other: &Thing) -> bool {
@@ -96,7 +96,7 @@ mod tests {
             Some(self.cmp(other))
         }
     }
-    
+
     impl Keyed for Thing {
         type Key = i32;
         fn key(&self) -> Self::Key {
@@ -121,15 +121,21 @@ mod tests {
         let mut v = vec![Thing(1, 0.1), Thing(3, 0.3), Thing(5, 0.5)];
         v.put(Thing(4, 0.4));
         println!("{:?}", v);
-        assert!(v == vec![Thing(1, 0.1), Thing(3, 0.3), Thing(4, 0.4), Thing(5, 0.5 )]);
+        assert!(v == vec![Thing(1, 0.1), Thing(3, 0.3), Thing(4, 0.4), Thing(5, 0.5)]);
         v.put(Thing(4, 0.6));
-        assert!(v == vec![Thing(1, 0.1), Thing(3, 0.3), Thing(4, 1.0), Thing(5, 0.5 )]);
+        assert!(v == vec![Thing(1, 0.1), Thing(3, 0.3), Thing(4, 1.0), Thing(5, 0.5)]);
 
         assert!(v.get_by_key(&3) == Some(&Thing(3, 0.3)));
 
         let w = vec![Thing(1, 0.9), Thing(2, 0.2), Thing(6, 0.6)];
         v.merge(w);
-        assert!(v == vec![Thing(1, 1.0), Thing(2, 0.2), Thing(3, 0.3), Thing(4, 1.0), Thing(5, 0.5 ), Thing(6, 0.6)]);
+        assert!(v ==
+                vec![Thing(1, 1.0),
+                     Thing(2, 0.2),
+                     Thing(3, 0.3),
+                     Thing(4, 1.0),
+                     Thing(5, 0.5),
+                     Thing(6, 0.6)]);
     }
 
     fn is_sorted<T: Ord>(v: &[T]) -> bool {
